@@ -1,0 +1,22 @@
+{
+  "name": "callcenter",
+  "version": "1.0.0",
+  "description": "AI-powered support chatbot for domestic flight inquiries",
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd cmd/api && go run main.go",
+    "start:frontend": "cd web && npm start",
+    "build": "concurrently \"npm run build:backend\" \"npm run build:frontend\"",
+    "build:backend": "cd cmd/api && go build -o ../../bin/main",
+    "build:frontend": "cd web && npm run build",
+    "test": "concurrently \"npm run test:backend\" \"npm run test:frontend\"",
+    "test:backend": "go test ./...",
+    "test:frontend": "cd web && npm test",
+    "install": "concurrently \"npm run install:backend\" \"npm run install:frontend\"",
+    "install:backend": "go mod download",
+    "install:frontend": "cd web && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 

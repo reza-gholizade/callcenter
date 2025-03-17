@@ -1,0 +1,53 @@
+# Environment variables
+.env
+
+# Go specific
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Dependencies
+vendor/
+node_modules/
+
+# Build output
+dist/
+build/
+bin/
+
+# Database
+*.db
+*.sqlite
+
+# Temporary files
+tmp/
+temp/
+
+# Coverage reports
+coverage.txt
+
+# Binary files
+*.bin
+*.exe
+*.dll
+*.so
+*.dylib
+
+# System Files
+.DS_Store
+Thumbs.db 

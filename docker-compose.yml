@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=callcenter
+      - DB_PASSWORD=callcenter123
+      - DB_NAME=callcenter
+      - JWT_SECRET=your-secret-key
+      - ENV=development
+      - GIN_MODE=debug
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./cmd:/app/cmd
+      - ./internal:/app/internal
+      - ./pkg:/app/pkg
+      - ./go.mod:/app/go.mod
+      - ./go.sum:/app/go.sum
+    networks:
+      - callcenter-network
+
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080/api/v1
+      - WDS_SOCKET_PORT=0
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - callcenter-network
+    stdin_open: true
+    tty: true
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=callcenter
+      - POSTGRES_PASSWORD=callcenter123
+      - POSTGRES_DB=callcenter
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./internal/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./internal/database/migrations:/docker-entrypoint-initdb.d/migrations
+    networks:
+      - callcenter-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U callcenter"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  callcenter-network:
+    driver: bridge 
